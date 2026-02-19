@@ -431,6 +431,27 @@
             background: linear-gradient(45deg, #0d8f72, #156b5d);
             transform: translateY(-2px);
         }
+
+        /* LINE 分享按鈕 */
+        .line-share-btn {
+            background: #06c755;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease;
+            width: fit-content;
+            display: none; /* 預設隱藏，由 JS 控制顯示 */
+        }
+
+        .line-share-btn:hover {
+            background: #05b34c; /* Slightly darker green */
+            transform: translateY(-2px);
+        }
         
         /* Prompt 輸出區塊 */
         .prompt-output {
@@ -807,6 +828,8 @@
             }
         }
     </style>
+    <!-- LIFF SDK -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1282,6 +1305,11 @@
                 🤖 直接發送到 ChatGPT
             </button>
 
+            <!-- 新增：分享到 LINE 的按鈕 -->
+            <button type="button" class="line-share-btn" onclick="shareToLine()">
+                💬 分享到 LINE
+            </button>
+
             <div class="prompt-output" id="promptOutput">
                 <h3>🤖 給 ChatGPT 的劇本創作指令</h3>
                 <p style="color: #666; margin-bottom: 15px;">複製下面的指令到 ChatGPT，就能生成你的劇本大綱！</p>
@@ -1299,6 +1327,65 @@
     </div>
 
     <script>
+        // LIFF ID (請替換為您的 LIFF ID)
+        const LIFF_ID = 'YOUR_LIFF_ID';
+
+        /**
+         * 初始化 LIFF
+         */
+        async function initializeLiff() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (liff.isLoggedIn()) {
+                    // 如果已登入，顯示分享按鈕
+                    // 這裡我們等到生成Prompt後再顯示按鈕，或者可以直接顯示
+                    // 但目前的UI邏輯是生成後才顯示操作區
+                }
+            } catch (error) {
+                console.error('LIFF init failed', error);
+            }
+        }
+
+        /**
+         * 分享到 LINE
+         */
+        async function shareToLine() {
+            if (!liff.isInClient() && !liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
+
+            const promptText = document.getElementById('promptText').textContent;
+            if (!promptText) {
+                showMessageBox('請先生成劇本指令！');
+                return;
+            }
+
+            try {
+                if (liff.isApiAvailable('shareTargetPicker')) {
+                    const res = await liff.shareTargetPicker([
+                        {
+                            type: "text",
+                            text: promptText
+                        }
+                    ]);
+                    if (res) {
+                        showMessageBox('分享成功！');
+                    }
+                } else {
+                    // Fallback for environments where shareTargetPicker is not available
+                    // e.g. external browser without login, or if the LIFF app config forbids it
+                    showMessageBox('此環境不支援直接分享，請複製文字後手動分享。');
+                }
+            } catch (error) {
+                console.error('Sharing failed', error);
+                showMessageBox('分享失敗：' + error.message);
+            }
+        }
+
+        // 頁面載入時初始化 LIFF
+        window.addEventListener('load', initializeLiff);
+
         /**
          * 獲取所有選中 checkbox 的值
          * @param {string} name - checkbox 的 name 屬性值
@@ -1444,6 +1531,9 @@ ${themes.join('、') || '無'}`;
             // 顯示ChatGPT按鈕
             document.querySelector('.chatgpt-btn').style.display = 'block';
             
+            // 顯示 LINE 分享按鈕
+            document.querySelector('.line-share-btn').style.display = 'block';
+
             // 滾動到結果區塊
             document.getElementById('promptOutput').scrollIntoView({ 
                 behavior: 'smooth' 
