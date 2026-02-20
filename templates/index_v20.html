@@ -31,7 +31,7 @@
             <div class="glass-card rounded-xl p-6">
                 <h2 class="text-xl font-semibold mb-4 text-pink-400">喵姆裁決 (Verdict)</h2>
                 <div id="miau-verdict" class="text-gray-300 space-y-2">
-                    強力買進，但需注意風險控管。
+                    {{miau_verdict}}
                 </div>
             </div>
 
@@ -51,13 +51,13 @@
                 <div class="bg-gray-800 rounded p-4">
                     <h3 class="text-sm text-gray-400 mb-2">龍蝦狀態 (2356/2382)</h3>
                     <div id="lobster-status" class="text-lg font-bold">
-                        無特定標的觸發守門員
+                        {{lobster_status}}
                     </div>
                 </div>
                 <div class="bg-gray-800 rounded p-4">
                     <h3 class="text-sm text-gray-400 mb-2">建議凱利值 (Kelly Bet)</h3>
                     <div id="kelly-bet" class="text-lg font-bold text-green-400">
-                        20.0%
+                        {{kelly_bet}}
                     </div>
                 </div>
             </div>
@@ -67,28 +67,7 @@
         <div class="glass-card rounded-xl p-6 mt-6">
             <h2 class="text-xl font-semibold mb-4 text-blue-400">EPS 預測軌跡</h2>
             <div id="eps-forecast" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                
-                <div class="bg-gray-800 rounded p-3">
-                    <div class="text-xs text-gray-500">2023 Q4</div>
-                    <div class="text-lg font-bold text-white">2.5</div>
-                </div>
-
-                <div class="bg-gray-800 rounded p-3">
-                    <div class="text-xs text-gray-500">2024 Q1</div>
-                    <div class="text-lg font-bold text-white"> 3.0</div>
-                </div>
-                
-                <div class="bg-gray-800 rounded p-3">
-                    <div class="text-xs text-gray-500">2024 Q2</div>
-                    <div class="text-lg font-bold text-white"> 3.2</div>
-                </div>
-                
-                <div class="bg-gray-800 rounded p-3">
-                    <div class="text-xs text-gray-500">2024 Total</div>
-                    <div class="text-lg font-bold text-green-400"> 12.0
-</div>
-                </div>
-
+                {{eps_forecast}}
             </div>
         </div>
 
@@ -107,7 +86,7 @@
                 labels: ['籌碼面', '技術面', '基本面', '消息面', 'AI 信心'],
                 datasets: [{
                     label: '綜合評分',
-                    data: [85, 80, 75, 90, 88],
+                    data: [{{radar_data}}],
                     fill: true,
                     backgroundColor: 'rgba(236, 72, 153, 0.2)',
                     borderColor: 'rgb(236, 72, 153)',
